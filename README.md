@@ -38,3 +38,26 @@ Install via composer:
 ```bash
 php composer.phar install
 ```
+
+##Usage##
+
+```php
+require 'vendor/autoload.php';
+
+use GravityMedia\Urn\Urn;
+
+// define URN string
+$urnString = 'urn:example-namespace-id:just_an_example';
+
+// check if string is a valid URN
+var_dump(Urn::isValid($urnString));
+
+// create URN from string
+$urn = Urn::fromString($urnString);
+
+// dump namespace identifier
+var_dump($urn->getNamespaceIdentifier());
+
+// dump namespace specific string
+var_dump($urn->getNamespaceSpecificString());
+```
