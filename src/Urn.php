@@ -107,7 +107,7 @@ class Urn
     public static function isValid($string)
     {
         $pattern = str_replace('/', '\/', self::VALID_NID_PATTERN . ':' . self::VALID_NSS_PATTERN);
-        if (preg_match('/^' . $pattern . '$/', preg_replace('/^urn\:/i', '', $string)) > 0) {
+        if (preg_match('/^' . $pattern . '$/i', preg_replace('/^urn\:/i', '', $string)) > 0) {
             return true;
         }
         return false;
@@ -135,7 +135,7 @@ class Urn
     {
         $pattern = str_replace('/', '\/', self::VALID_NID_PATTERN);
         if ('urn' === strtolower($namespaceIdentifier)
-            || preg_match('/^' . $pattern . '$/', $namespaceIdentifier) < 1
+            || preg_match('/^' . $pattern . '$/i', $namespaceIdentifier) < 1
         ) {
             throw new InvalidArgumentException(sprintf('Invalid namespace identifier "%s"', $namespaceIdentifier));
         }
@@ -163,7 +163,7 @@ class Urn
     public function setNamespaceSpecificString($namespaceSpecificString)
     {
         $pattern = str_replace('/', '\/', self::VALID_NSS_PATTERN);
-        if (preg_match('/^' . $pattern . '$/', $namespaceSpecificString) < 1) {
+        if (preg_match('/^' . $pattern . '$/i', $namespaceSpecificString) < 1) {
             throw new InvalidArgumentException(
                 sprintf('Invalid namespace specific string "%s"', $namespaceSpecificString)
             );
