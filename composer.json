@@ -22,7 +22,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "GravityMedia\\UrnTest\\": "tests/"
+            "GravityMedia\\UrnTest\\": "tests/src/"
         }
     }
 }
