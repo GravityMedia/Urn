@@ -5,16 +5,16 @@
  * @author Daniel Schröder <daniel.schroeder@gravitymedia.de>
  */
 
-namespace GravityMedia\Urn\Test;
+namespace GravityMedia\UrnTest;
 
 use GravityMedia\Urn\Urn;
 
 /**
  * URN test
  *
- * @package GravityMedia\Urn
+ * @package GravityMedia\UrnTest
  */
-class UrnTest extends UrnTestCase
+class UrnTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @covers GravityMedia\Urn\Urn::toString()
