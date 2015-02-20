@@ -21,7 +21,7 @@ This library has the following requirements:
 Install composer in your project:
 
 ```bash
-curl -s https://getcomposer.org/installer | php
+$ curl -s https://getcomposer.org/installer | php
 ```
 
 Create a `composer.json` file in your project root:
@@ -37,7 +37,7 @@ Create a `composer.json` file in your project root:
 Install via composer:
 
 ```bash
-php composer.phar install
+$ php composer.phar install
 ```
 
 ##Usage##
