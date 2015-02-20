@@ -1,13 +1,14 @@
 #Uniform Resource Names (URN)
-[![Latest Stable Version](https://poser.pugx.org/gravitymedia/urn/v/stable.svg)](https://packagist.org/packages/gravitymedia/urn)
-[![Total Downloads](https://poser.pugx.org/gravitymedia/urn/downloads.svg)](https://packagist.org/packages/gravitymedia/urn)
-[![Latest Unstable Version](https://poser.pugx.org/gravitymedia/urn/v/unstable.svg)](https://packagist.org/packages/gravitymedia/urn)
-[![License](https://poser.pugx.org/gravitymedia/urn/license.svg)](https://packagist.org/packages/gravitymedia/urn)
-[![Build Status](https://travis-ci.org/GravityMedia/Urn.svg?branch=master)](https://travis-ci.org/GravityMedia/Urn)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/GravityMedia/Urn/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/GravityMedia/Urn/?branch=master)
-[![Code Coverage](https://scrutinizer-ci.com/g/GravityMedia/Urn/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/GravityMedia/Urn/?branch=master)
 
 A PHP 5.3+ library for generating RFC 2141 compliant uniform resource names (URN)
+
+[![Packagist](https://img.shields.io/packagist/v/gravitymedia/urn.svg)](https://packagist.org/packages/gravitymedia/urn)
+[![Downloads](https://img.shields.io/packagist/dt/gravitymedia/urn.svg)](https://packagist.org/packages/gravitymedia/urn)
+[![License](https://img.shields.io/packagist/l/gravitymedia/urn.svg)](https://packagist.org/packages/gravitymedia/urn)
+[![Build](https://img.shields.io/travis/GravityMedia/Urn.svg)](https://travis-ci.org/GravityMedia/Urn)
+[![Code Quality](https://img.shields.io/scrutinizer/g/GravityMedia/Urn.svg)](https://scrutinizer-ci.com/g/GravityMedia/Urn/?branch=master)
+[![Coverage](https://img.shields.io/scrutinizer/coverage/g/GravityMedia/Urn.svg)](https://scrutinizer-ci.com/g/GravityMedia/Urn/?branch=master)
+[![PHP Dependencies](https://www.versioneye.com/user/projects/54a6c39d27b014005400004b/badge.svg)](https://www.versioneye.com/user/projects/54a6c39d27b014005400004b)
 
 ##Requirements##
 
