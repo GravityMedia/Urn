@@ -10,49 +10,67 @@ namespace GravityMedia\UrnTest;
 use GravityMedia\Urn\Urn;
 
 /**
- * URN test
+ * URN test class.
  *
  * @package GravityMedia\UrnTest
+ *
+ * @covers  GravityMedia\Urn\Urn
  */
 class UrnTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @covers GravityMedia\Urn\Urn::toString()
+     * Test URN construction from malformed string throws exception.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage The string argument appears to be malformed
      */
-    public function testStringExtraction()
+    public function testUrnConstructionFromMalformedStringThrowsException()
     {
-        $urn = new Urn();
-        $urn->setNamespaceIdentifier('this-is-an-example');
-        $urn->setNamespaceSpecificString('t(h)i+s,i-s.a:n=o@t;h$e_r!e*x\'a%m/p?l#e');
-
-        $this->assertEquals('urn:this-is-an-example:t(h)i+s,i-s.a:n=o@t;h$e_r!e*x\'a%m/p?l#e', $urn->toString());
+        Urn::fromString('::');
     }
 
     /**
-     * @covers GravityMedia\Urn\Urn::fromString()
+     * Test URN construction from string.
+     *
+     * @dataProvider provideUrnStrings()
+     *
+     * @param string $input
+     * @param string $output
+     * @param array  $expectations
      */
-    public function testStringHydration()
+    public function testUrnConstructionFromString($input, $output, array $expectations)
     {
-        $urn = Urn::fromString('urn:this-is-an-example:t(h)i+s,i-s.a:n=o@t;h$e_r!e*x\'a%m/p?l#e');
+        $urn = Urn::fromString($input);
 
-        $this->assertInstanceOf('GravityMedia\Urn\Urn', $urn);
+        $this->assertSame($output, (string)$urn);
+        $this->assertSame($expectations['nid'], $urn->getNamespaceIdentifier());
+        $this->assertSame($expectations['nss'], $urn->getNamespaceSpecificString());
     }
 
     /**
-     * @covers GravityMedia\Urn\Urn::equals()
+     * Provide URN strings.
+     *
+     * @return array
      */
-    public function testEqualityOperator()
+    public function provideUrnStrings()
     {
-        $urn = Urn::fromString('urn:this-is-an-example:t(h)i+s,i-s.a:n=o@t;h$e_r!e*x\'a%m/p?l#e');
-
-        $this->assertTrue($urn->equals($urn));
-    }
-
-    /**
-     * @covers GravityMedia\Urn\Urn::isValid()
-     */
-    public function testValidator()
-    {
-        $this->assertTrue(Urn::isValid('urn:this-is-an-example:t(h)i+s,i-s.a:n=o@t;h$e_r!e*x\'a%m/p?l#e'));
+        return [
+            [
+                'urn:example:animal:ferret:nose',
+                'urn:example:animal:ferret:nose',
+                [
+                    'nid' => 'example',
+                    'nss' => 'animal:ferret:nose'
+                ]
+            ],
+            [
+                'urn:this-is-an-example:t(h)i+s,i-s.a:n=o@t;h$e_r!e*x\'a%m/p?l#e',
+                'urn:this-is-an-example:t(h)i+s,i-s.a:n=o@t;h$e_r!e*x\'a%m/p?l#e',
+                [
+                    'nid' => 'this-is-an-example',
+                    'nss' => 't(h)i+s,i-s.a:n=o@t;h$e_r!e*x\'a%m/p?l#e'
+                ]
+            ]
+        ];
     }
 }

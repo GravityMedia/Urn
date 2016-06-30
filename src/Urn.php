@@ -7,116 +7,104 @@
 
 namespace GravityMedia\Urn;
 
-use InvalidArgumentException;
-
 /**
- * URN
+ * URN class.
  *
  * @package GravityMedia\Urn
  */
-class Urn
+class Urn implements UrnInterface
 {
     /**
-     * Valid namespace identifier pattern
+     * Namespace identifier regex pattern.
+     *
+     * @const string
      */
-    const VALID_NID_PATTERN = '[a-z0-9-][a-z0-9-]{0,31}';
+    const NID_PATTERN = '/^[A-Za-z0-9-][A-Za-z0-9-]{0,31}$/';
 
     /**
-     * Valid namespace specific string pattern
+     * Namespace specific string regex pattern.
      */
-    const VALID_NSS_PATTERN = '[a-z0-9()+,\-.:=@;$_!*\'%/?#]+';
+    const NSS_PATTERN = '/^[A-Za-z0-9()+,\-.:=@;$_!*\'%\/?#]+$/';
 
     /**
+     * The namespace identifier.
+     *
      * @var string
      */
     protected $namespaceIdentifier;
 
     /**
+     * The namespace specific string.
+     *
      * @var string
      */
     protected $namespaceSpecificString;
 
     /**
-     * Return string representation
-     *
-     * @return string
+     * The protected constructor.
      */
-    public function __toString()
+    protected function __construct()
     {
-        return $this->toString();
+        // to prevent object construction without nid and/or nss
     }
 
     /**
-     * Return URN as string
+     * Create URN object from array.
      *
-     * @return string
+     * @param array $array
+     *
+     * @return static
+     * @throws \InvalidArgumentException
      */
-    public function toString()
+    public static function fromArray(array $array)
     {
-        return sprintf(
-            'urn:%s:%s',
-            $this->getNamespaceIdentifier(),
-            $this->getNamespaceSpecificString()
-        );
-    }
-
-    /**
-     * Check if an URN equals this one
-     *
-     * @param Urn $urn
-     *
-     * @return bool
-     */
-    public function equals($urn)
-    {
-        if (!$urn instanceof Urn) {
-            return false;
+        if (!isset($array['nid'])) {
+            throw new \InvalidArgumentException('The namespace identifier was not specified');
         }
 
-        return $this->toString() === $urn->toString();
+        if (!isset($array['nss'])) {
+            throw new \InvalidArgumentException('The namespace specific string was not specified');
+        }
+
+        /** @var Urn $urn */
+        $urn = new static();
+        $urn = $urn->withNamespaceIdentifier($array['nid']);
+        $urn = $urn->withNamespaceSpecificString($array['nss']);
+
+        return $urn;
     }
 
     /**
-     * Create URN from string
+     * Create URN object from string.
      *
      * @param string $string
      *
-     * @throws InvalidArgumentException
-     * @return $this
+     * @return static
+     * @throws \InvalidArgumentException
      */
     public static function fromString($string)
     {
-        if (!self::isValid($string)) {
-            throw new InvalidArgumentException(sprintf('Invalid URN string: %s', $string));
+        $array = explode(':', $string, 3);
+        if (3 !== count($array) || 'urn' !== strtolower($array[0])) {
+            throw new \InvalidArgumentException('The string argument appears to be malformed');
         }
-        $tuple = explode(':', preg_replace('/^urn:/i', '', $string), 2);
-        /** @var Urn $urn */
-        $urn = new static();
-        return $urn
-            ->setNamespaceIdentifier(array_shift($tuple))
-            ->setNamespaceSpecificString(array_shift($tuple));
+
+        if (1 !== preg_match(static::NID_PATTERN, $array[1])) {
+            throw new \InvalidArgumentException('The string does not contain a valid namespace identifier');
+        }
+
+        if (1 !== preg_match(static::NSS_PATTERN, $array[2])) {
+            throw new \InvalidArgumentException('The string does not contain a valid namespace specific string');
+        }
+
+        $array['nid'] = $array[1];
+        $array['nss'] = $array[2];
+
+        return static::fromArray($array);
     }
 
     /**
-     * Check if a string is a valid URN
-     *
-     * @param string $string
-     *
-     * @return bool
-     */
-    public static function isValid($string)
-    {
-        $pattern = str_replace('/', '\/', self::VALID_NID_PATTERN . ':' . self::VALID_NSS_PATTERN);
-        if (preg_match('/^' . $pattern . '$/i', preg_replace('/^urn\:/i', '', $string)) > 0) {
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Get namespace identifier
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getNamespaceIdentifier()
     {
@@ -124,29 +112,7 @@ class Urn
     }
 
     /**
-     * Set namespace identifier
-     *
-     * @param string $namespaceIdentifier
-     *
-     * @throws InvalidArgumentException
-     * @return $this
-     */
-    public function setNamespaceIdentifier($namespaceIdentifier)
-    {
-        $pattern = str_replace('/', '\/', self::VALID_NID_PATTERN);
-        if ('urn' === strtolower($namespaceIdentifier)
-            || preg_match('/^' . $pattern . '$/i', $namespaceIdentifier) < 1
-        ) {
-            throw new InvalidArgumentException(sprintf('Invalid namespace identifier "%s"', $namespaceIdentifier));
-        }
-        $this->namespaceIdentifier = $namespaceIdentifier;
-        return $this;
-    }
-
-    /**
-     * Get namespace specific string
-     *
-     * @return string
+     * {@inheritdoc}
      */
     public function getNamespaceSpecificString()
     {
@@ -154,21 +120,54 @@ class Urn
     }
 
     /**
-     * Set namespace specific string
-     *
-     * @param string $namespaceSpecificString
-     *
-     * @return $this
+     * {@inheritdoc}
      */
-    public function setNamespaceSpecificString($namespaceSpecificString)
+    public function withNamespaceIdentifier($nid)
     {
-        $pattern = str_replace('/', '\/', self::VALID_NSS_PATTERN);
-        if (preg_match('/^' . $pattern . '$/i', $namespaceSpecificString) < 1) {
-            throw new InvalidArgumentException(
-                sprintf('Invalid namespace specific string "%s"', $namespaceSpecificString)
-            );
+        if (1 !== preg_match(static::NID_PATTERN, $nid)) {
+            throw new \InvalidArgumentException('The string does not contain a valid namespace identifier');
         }
-        $this->namespaceSpecificString = $namespaceSpecificString;
-        return $this;
+
+        $urn = clone $this;
+        $urn->namespaceIdentifier = (string)$nid;
+
+        return $urn;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function withNamespaceSpecificString($nss)
+    {
+        if (1 !== preg_match(static::NSS_PATTERN, $nss)) {
+            throw new \InvalidArgumentException('The string does not contain a valid namespace specific string');
+        }
+
+        $urn = clone $this;
+        $urn->namespaceSpecificString = (string)$nss;
+
+        return $urn;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __toString()
+    {
+        return $this->toString();
+    }
+
+    /**
+     * Convert URN into a string representation.
+     *
+     * @return string
+     */
+    public function toString()
+    {
+        $urn = 'urn';
+        $urn .= ':' . $this->getNamespaceIdentifier();
+        $urn .= ':' . $this->getNamespaceSpecificString();
+
+        return $urn;
     }
 }
